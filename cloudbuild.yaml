@@ -1,0 +1,17 @@
+steps:
+  - name: "node:14"
+    entrypoint: "npm"
+    args: ["install"]
+  - name: "node:14"
+    entrypoint: "npm"
+    args: ["run", "build"]
+    # Build container image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/amish-chinese/youtube-subtitles", "."]
+    # Push the container image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/amish-chinese/youtube-subtitles"]
+    # Deploy image container to Cloud run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args: ["run", "deploy", "youtube-subtitles", "--image", "gcr.io/amish-chinese/youtube-subtitles", "--region", "us-central1"]
